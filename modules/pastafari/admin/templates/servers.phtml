@@ -1,2 +1,5 @@
-<a href="${add_get_parameters(url, op='add_new_server')}">${lang('pastafari', 'add_new_server', 'Add new server')}</a>
+<h2>${lang('pastafari', 'servers_types', 'Servers categories')}</h2>
+<form method="get" action="${server_list.url}">
+<p>${lang('pastafari', 'servers_types', 'Servers categories')}: ${profiles.form()|n} <input type="submit" value="${lang('pastafari', 'change_profile', 'Change profile')}"/></p>
+</form>
 ${server_list.show()|n}

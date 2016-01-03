@@ -6,6 +6,9 @@ from paramecio.citoplasma.lists import SimpleList
 from modules.pastafari.models import servers
 from paramecio.citoplasma.urls import make_url
 from paramecio.citoplasma.httputils import GetPostFiles
+from paramecio.citoplasma.i18n import I18n
+from paramecio.citoplasma.urls import add_get_parameters
+from paramecio.cromosoma.coreforms import SelectForm
 
 def admin(t):
     
@@ -15,10 +18,13 @@ def admin(t):
     
     GetPostFiles.get['op']=GetPostFiles.get.get('op', '')
     
-    server=servers.ServerModel()
+    server=servers.Server()
+    
     url=make_url(config.admin_folder+'/pastafari/servers')
     
     if GetPostFiles.get['op']=='add_new_server':
+    
+        #Check if the server can be access with god module using ssh, if yes, install idea(aka virus or platon) using protozoo or similar program
     
         server.create_forms()
     
@@ -27,6 +33,46 @@ def admin(t):
     
     else:
     
-        server_list=SimpleList(server, url, t)
+        server.distinct='DISTINCT'
+        
+        server.order_by='order by profile ASC'
+        
+        arr_profiles=server.select_to_array(['profile'])
+        
+        profiles=SelectForm('profile', '')
+        
+        profiles.arr_select['']=''
+        
+        for profile in arr_profiles.values():
+            
+            profiles.arr_select[profile['profile']]=profile['profile']
     
-        return t.load_template('servers.phtml', server_list=server_list, url=url)
+        server.distinct=''
+        
+        GetPostFiles.get['profile']=GetPostFiles.get.get('profile', '')
+        
+        url=add_get_parameters(url, profile= GetPostFiles.get['profile'])
+        
+        if GetPostFiles.get['profile'] in profiles.arr_select and GetPostFiles.get['profile']!='':
+            server.conditions=['where profile=%s', [GetPostFiles.get['profile']]]
+        
+        profiles.default_value=GetPostFiles.get['profile']
+    
+        server_list=SimpleList(server, url, t)
+        
+        #server_list.fields=['id', 'type']
+        
+        server_list.fields_showed=['name', 'ip', 'profile', 'type', 'status']
+        
+        server_list.yes_search=False
+        
+        server_list.arr_extra_fields=[I18n.lang('pastafari', '', 'index')]
+        
+        server_list.arr_extra_options=[server_options]
+    
+        return t.load_template('servers.phtml', server_list=server_list, url=url, profiles=profiles)
+    
+def server_options(url, id, arr_row):
+        options=[]
+        options.append('<a href="'+add_get_parameters(url, op_admin='see_status', id=id)+'">'+I18n.lang('pastafari', 'see_status', 'See status')+'</a>')
+        return options
