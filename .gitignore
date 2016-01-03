@@ -1,0 +1,14 @@
+*~
+*.pyc
+__pycache__
+modules/*
+!modules/pastafari
+themes/*
+!themes/default/
+paramecio
+paramecio/
+tests
+tests/
+backups/
+sessions/
+
