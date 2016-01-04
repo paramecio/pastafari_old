@@ -1,4 +1,10 @@
 <h2>${lang('pastafari', 'servers_types', 'Servers categories')}</h2>
+<p>${lang('pastafari', 'total_servers', 'Total servers')}: ${num_servers_failed+num_servers_uptime}</p>
+% if num_servers_failed>0:
+<p><span class="error">${lang('pastafari', 'total_servers_down', 'Total servers down')}: ${num_servers_failed}</span></p>
+%else:
+<p><strong>${lang('pastafari', 'all_fine', 'All systems are fine')}</strong></p>
+% endif
 <form method="get" action="${server_list.url}">
 <p>${lang('pastafari', 'servers_types', 'Servers categories')}: ${profiles.form()|n} <input type="submit" value="${lang('pastafari', 'change_profile', 'Change profile')}"/></p>
 </form>

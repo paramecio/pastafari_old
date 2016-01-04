@@ -29,15 +29,21 @@ class NodeModel(WebModel):
       
 """
 
-class StatusField(corefields.PhangoField):
+class StatusField(corefields.BooleanField):
     
-    def show_formatted(value):
+    def __init__(self, name, size=1):
         
-        if value=='0':
+        super().__init__(name, size)
         
-            return make_media_url_module('images/status_red.png', 'pastafari')
+        self.escape=False
+    
+    def show_formatted(self, value):
         
-        return make_media_url_module('images/status_green.png', 'pastafari')
+        if value==0:
+            
+            return '<img src="'+make_media_url_module('images/status_red.png', 'pastafari')+'" />'
+        else:
+            return '<img src="'+make_media_url_module('images/status_green.png', 'pastafari')+'" />'
             
         
 
@@ -49,11 +55,13 @@ class Server(WebModel):
 
         self.register(ipfield.IpField('ip'), True)
 
+        self.register(corefields.CharField('hostname'))
+
         self.register(corefields.CharField('name'))
 
         self.register(corefields.CharField('type'))
 
         self.register(corefields.CharField('profile'))
 
-        self.register(corefields.BooleanField('status'))
+        self.register(StatusField('status'))
         

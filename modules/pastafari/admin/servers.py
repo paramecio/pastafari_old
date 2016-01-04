@@ -33,6 +33,18 @@ def admin(t):
     
     else:
     
+        # Obtain uptimes
+        
+        server.conditions=['where status=%s', [0]]
+        
+        num_servers_failed=server.select_count()
+        
+        server.conditions=['where status=%s', [1]]
+        
+        num_servers_uptime=server.select_count()
+        
+        # Obtain profiles
+        
         server.distinct='DISTINCT'
         
         server.order_by='order by profile ASC'
@@ -66,11 +78,11 @@ def admin(t):
         
         server_list.yes_search=False
         
-        server_list.arr_extra_fields=[I18n.lang('pastafari', '', 'index')]
+        server_list.arr_extra_fields=[I18n.lang('common', 'options', 'Options')]
         
         server_list.arr_extra_options=[server_options]
     
-        return t.load_template('servers.phtml', server_list=server_list, url=url, profiles=profiles)
+        return t.load_template('servers.phtml', server_list=server_list, url=url, profiles=profiles, num_servers_failed=num_servers_failed, num_servers_uptime=num_servers_uptime)
     
 def server_options(url, id, arr_row):
         options=[]

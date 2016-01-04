@@ -38,7 +38,7 @@ default_module="welcome"
 
 #Modules with permissions to access for users
 
-modules=['paramecio.modules.welcome', 'paramecio.modules.admin', 'paramecio.modules.lang', 'modules.tests']
+modules=['paramecio.modules.welcome', 'paramecio.modules.admin', 'paramecio.modules.lang', 'modules.tests', 'modules.pastafari']
 
 #Activate sessions?
 
