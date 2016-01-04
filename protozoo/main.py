@@ -6,6 +6,7 @@ import argparse
 import paramiko
 import logging
 import getpass
+import traceback
 from pathlib import Path
 from protozoo.configclass import ConfigClass
 from protozoo.configtask import ConfigTask
@@ -106,7 +107,6 @@ def make_task(rsa, ssh, task_name, features):
     
     logging.info("Connecting to the server...")
     
-    
     try:
     
         ssh.connect(server_ip, port=ConfigClass.port, username=ConfigClass.remote_user, password=None, pkey=rsa, key_filename=ConfigClass.private_key, timeout=None, allow_agent=True, look_for_keys=True, compress=False, sock=None, gss_auth=False, gss_kex=False, gss_deleg_creds=True, gss_host=None, banner_timeout=None)
@@ -125,6 +125,11 @@ def make_task(rsa, ssh, task_name, features):
         
     except OSError as e:
         logging.warning("Error: cannot connect to the server "+server+" "+str(e))
+        exit(1)
+        
+    except:    
+        
+        logging.warning(traceback.format_exc())
         exit(1)
         
     #Open sftp session
@@ -371,7 +376,7 @@ def check_process(process, num_forks, finish=True, percent=0, c_servers=0):
     return (process, num_forks, percent)
 
 # Prepare keys for ssh connection
-def prepare_ssh_keys(password, num_tries=0):
+def prepare_ssh_keys(password, num_tries=0, yes_pass=True):
     
     try:
         
@@ -381,7 +386,7 @@ def prepare_ssh_keys(password, num_tries=0):
     
         num_tries+=1
     
-        if num_tries<4:
+        if num_tries<4 and yes_pass==True:
         
             p=getpass.getpass('Password for your ssh key:')
             
