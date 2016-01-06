@@ -5,9 +5,9 @@ import os
 import argparse
 import paramiko
 import logging
-import getpass
 import traceback
 from pathlib import Path
+from protozoo.library import prepare_ssh_keys
 from protozoo.configclass import ConfigClass
 from protozoo.configtask import ConfigTask
 from collections import OrderedDict
@@ -374,31 +374,6 @@ def check_process(process, num_forks, finish=True, percent=0, c_servers=0):
         exit(1)
     
     return (process, num_forks, percent)
-
-# Prepare keys for ssh connection
-def prepare_ssh_keys(password, num_tries=0, yes_pass=True):
-    
-    try:
-        
-        rsa=paramiko.RSAKey.from_private_key_file(ConfigClass.private_key, password)
-        
-    except (paramiko.ssh_exception.PasswordRequiredException, paramiko.ssh_exception.SSHException):
-    
-        num_tries+=1
-    
-        if num_tries<4 and yes_pass==True:
-        
-            p=getpass.getpass('Password for your ssh key:')
-            
-            rsa=prepare_ssh_keys(p, num_tries)
-        
-        else:
-        
-            print(Style.BRIGHT+Fore.WHITE+Back.RED+"This private key need a password if you want execute the tasks...")
-        
-            return None
-    
-    return rsa
 
 def create_dir(path, permissions=0o755):
 

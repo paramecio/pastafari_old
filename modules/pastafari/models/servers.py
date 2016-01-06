@@ -51,17 +51,35 @@ class Server(WebModel):
 
     def create_fields(self):
 
-        self.register(corefields.CharField('os_codename'))
+        self.register(corefields.CharField('os_codename'), True)
 
         self.register(ipfield.IpField('ip'), True)
 
-        self.register(corefields.CharField('hostname'))
+        self.register(corefields.CharField('hostname'), True)
 
-        self.register(corefields.CharField('name'))
+        self.register(corefields.CharField('name'), True)
 
-        self.register(corefields.CharField('type'))
+        self.register(corefields.CharField('type'), True)
 
-        self.register(corefields.CharField('profile'))
+        self.register(corefields.CharField('profile'), True)
 
         self.register(StatusField('status'))
         
+class ServerTask(WebModel):
+    
+    def create_fields(self):
+        
+        self.register(corefields.CharField('task'))
+        
+        self.register(corefields.CharField('uuid'))
+        
+        self.register(corefields.BooleanField('status'))
+        
+        self.register(corefields.TextField('info'))
+        
+        self.register(corefields.IntegerField('pid'))
+        
+        
+        
+        
+    
