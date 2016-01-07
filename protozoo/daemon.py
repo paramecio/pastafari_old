@@ -179,6 +179,8 @@ def start():
         logging.warning('Error, check your task. The number of actions in task is zero')
         exit(1)
     
+    # TODO Add external config for this task
+    
     for action in ConfigTask.action:
         
         # Check if exists the files
@@ -192,6 +194,43 @@ def start():
             # TODO Use md5 hash for check the file.
             # print('File '+path_file+' doesn\'t exists')
             # Upload the script of this task
+            
+            try:
+                
+                stdin, stdout, stderr = ssh.exec_command('mkdir -p '+path.dirname(path_file))
+            
+                sftp=ssh.open_sftp()
+                
+                sftp.put(path_file, path_file)
+                
+            except:
+                
+                info={'ERROR': 1, 'CODE_ERROR': 5, 'TXT_ERROR': 'Error: Cannot connect: '+traceback.format_exc(), 'STATUS':1}
+                servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'info': json.dumps(info)})
+                exit(1)
+
+        # TODO Upload extra files
+
+        
+                
+        # Execute the script
+        
+        action.script_interpreter=''
+    
+        file_line=open(path_file)      
+        
+        execute_line=file_line.readline()
+        
+        file_line.close()
+        
+        if execute_line.find("#!")==0:
+            action.script_interpreter=execute_line.replace('#!', '').strip()+' '
+    
+        #Execute the script
+        
+        command_to_execute=action.script_interpreter+path_file+" "+action.parameters
+        
+        print(command_to_execute)
 
 if __name__=='__main__':
     start()
