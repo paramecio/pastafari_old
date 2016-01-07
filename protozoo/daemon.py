@@ -46,7 +46,7 @@ def start():
     
     if arr_server==False:
         
-        info={'ERROR': 1, 'CODE_ERROR': 4, 'TXT_ERROR': 'Error: server not exists', 'STATUS':1}
+        info={'ERROR': 1, 'CODE_ERROR': 4, 'TXT_ERROR': 'Error: server not exists', 'STATUS':1, 'PROGRESS': 100}
         
         servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'pid': pid, 'info': json.dumps(info)})
         
@@ -55,7 +55,7 @@ def start():
     arr_server['ip']=arr_server.get('ip', '')
     
     if arr_server['ip']=='':
-        info={'ERROR': 1, 'CODE_ERROR': 2, 'TXT_ERROR': 'Error: server not exists', 'STATUS':1}
+        info={'ERROR': 1, 'CODE_ERROR': 2, 'TXT_ERROR': 'Error: server not exists', 'STATUS':1, 'PROGRESS': 100}
         
         servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'pid': pid, 'info': json.dumps(info)})
         
@@ -69,7 +69,7 @@ def start():
     
     except:
         
-        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: ip not valid', 'STATUS':1}
+        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: ip not valid', 'STATUS':1, 'PROGRESS': 100}
         
         servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'pid': pid, 'info': json.dumps(info)})
         
@@ -113,13 +113,13 @@ def start():
         
     except SyntaxError as e:
         
-        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: error in task: '+str(e), 'STATUS':1}
-        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 3, 'info': json.dumps(info)})
+        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: error in task: '+str(e), 'STATUS':1, 'PROGRESS': 100}
+        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 3, 'pid': pid, 'info': json.dumps(info)})
         
         exit(1)
     except:
-        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: error in task: '+traceback.format_exc(), 'STATUS':1}
-        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'info': json.dumps(info)})
+        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: error in task: '+traceback.format_exc(), 'STATUS':1, 'PROGRESS': 100}
+        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 3, 'info': json.dumps(info)})
         exit(1)
         
     # Load locals
@@ -149,28 +149,28 @@ def start():
         ssh.connect(server, port=ConfigClass.port, username=ConfigClass.remote_user, password=None, pkey=rsa, key_filename=ConfigClass.private_key, timeout=None, allow_agent=True, look_for_keys=True, compress=False, sock=None, gss_auth=False, gss_kex=False, gss_deleg_creds=True, gss_host=None, banner_timeout=None)
     
     except paramiko.SSHException as e:
-        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: Cannot connect: '+str(e), 'STATUS':1}
-        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'info': json.dumps(info)})
+        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: Cannot connect: '+str(e), 'STATUS':1, 'PROGRESS': 100}
+        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'pid': pid, 'info': json.dumps(info)})
         exit(1)
     
     except paramiko.AuthenticationException as e:
-        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: Cannot connect: '+str(e), 'STATUS':1}
-        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'info': json.dumps(info)})
+        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: Cannot connect: '+str(e), 'STATUS':1, 'PROGRESS': 100}
+        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'pid': pid, 'info': json.dumps(info)})
         exit(1)
         
     except paramiko.BadHostKeyException as e:
-        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: Cannot connect: '+str(e), 'STATUS':1}
-        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'info': json.dumps(info)})
+        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: Cannot connect: '+str(e), 'STATUS':1, 'PROGRESS': 100}
+        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'pid': pid, 'info': json.dumps(info)})
         exit(1)
         
     except OSError as e:
-        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: Cannot connect: '+str(e), 'STATUS':1}
-        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'info': json.dumps(info)})
+        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: Cannot connect: '+str(e), 'STATUS':1, 'PROGRESS': 100}
+        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'pid': pid, 'info': json.dumps(info)})
         exit(1)
         
     except:    
-        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: Cannot connect: '+traceback.format_exc(), 'STATUS':1}
-        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'info': json.dumps(info)})
+        info={'ERROR': 1, 'CODE_ERROR': 1, 'TXT_ERROR': 'Error: Cannot connect: '+traceback.format_exc(), 'STATUS':1, 'PROGRESS': 100}
+        servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'pid': pid, 'info': json.dumps(info)})
         exit(1)
     
     # Check that exists the script in server
@@ -203,17 +203,17 @@ def start():
                 
                 sftp.put(path_file, path_file)
                 
+                # TODO Upload extra files
+                
             except:
                 
-                info={'ERROR': 1, 'CODE_ERROR': 5, 'TXT_ERROR': 'Error: Cannot connect: '+traceback.format_exc(), 'STATUS':1}
-                servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'error': 1, 'info': json.dumps(info)})
+                info={'ERROR': 1, 'CODE_ERROR': 5, 'TXT_ERROR': 'Error: Cannot connect: '+traceback.format_exc(), 'STATUS':1, 'PROGRESS': 100}
+                servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'pid': pid, 'error': 1, 'info': json.dumps(info)})
                 exit(1)
 
-        # TODO Upload extra files
-
-        
+            
                 
-        # Execute the script
+        # Obtain the script command
         
         action.script_interpreter=''
     
@@ -230,7 +230,32 @@ def start():
         
         command_to_execute=action.script_interpreter+path_file+" "+action.parameters
         
-        print(command_to_execute)
+        try:
+            #, get_pty=True
+            stdin, stdout, stderr = ssh.exec_command(command_to_execute)
+            
+            for line in stdout:
+                servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'pid': pid, 'error': 1, 'info': line})
+                
+            for line in stderr:
+                #logging.warning(action.codename+" WARNING: "+line)
+                pass
+            
+            
+            if stdout.channel.recv_exit_status()>0:
+                #line=stdout.readlines()
+                #logging.warning(action.codename+" WARNING: "+line)
+                info={'ERROR': 1, 'CODE_ERROR': 6, 'TXT_ERROR': 'Error: The script '+action.codename+' show an error: '+traceback.format_exc(), 'STATUS':1, 'PROGRESS': 100}
+                servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'pid': pid, 'error': 1, 'info': json.dumps(info)})
+                exit(1)
+            
+        except:
+            
+            info={'ERROR': 1, 'CODE_ERROR': 6, 'TXT_ERROR': 'Error: The script show an error: '+traceback.format_exc(), 'STATUS':1, 'PROGRESS': 100}
+            servertask.insert({'task': args.task, 'uuid': args.uuid, 'status': 1, 'pid': pid, 'error': 1, 'info': json.dumps(info)})
+            exit(1)
+
+    ssh.close()
 
 if __name__=='__main__':
     start()
