@@ -10,10 +10,10 @@ from paramecio.citoplasma.i18n import I18n
 from paramecio.citoplasma.urls import add_get_parameters
 from paramecio.cromosoma.coreforms import SelectForm
 
+ts=ptemplate(__file__)
+
 def admin(t):
-    
-    t=ptemplate(__file__)
-    
+  
     GetPostFiles.obtain_get()
     
     GetPostFiles.get['op']=GetPostFiles.get.get('op', '')
@@ -82,9 +82,11 @@ def admin(t):
         
         server_list.arr_extra_options=[server_options]
     
-        return t.load_template('servers.phtml', server_list=server_list, url=url, profiles=profiles, num_servers_failed=num_servers_failed, num_servers_uptime=num_servers_uptime)
+        return ts.load_template('servers.phtml', server_list=server_list, url=url, profiles=profiles, num_servers_failed=num_servers_failed, num_servers_uptime=num_servers_uptime)
     
 def server_options(url, id, arr_row):
         options=[]
         options.append('<a href="'+add_get_parameters(url, op_admin='see_status', id=id)+'">'+I18n.lang('pastafari', 'see_status', 'See status')+'</a>')
         return options
+    
+    

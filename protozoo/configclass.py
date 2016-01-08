@@ -10,7 +10,7 @@ class ConfigClass:
 	
 	tasks_path=['tasks', 'protozoo.tasks']
 	
-	scripts_path=['scripts', base_path+'/protozoo/scripts']
+	scripts_path=['scripts', 'protozoo/scripts']
 	
 	logs_path='logs'
 	

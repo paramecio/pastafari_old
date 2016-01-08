@@ -145,6 +145,8 @@ def make_task(rsa, ssh, task_name, features):
         
     #Create tmp if not exists
     
+    """
+    
     tmp_path=ConfigClass.remote_path+'/'+ConfigClass.tmp_sftp_path;
     
     try:
@@ -155,7 +157,7 @@ def make_task(rsa, ssh, task_name, features):
         
         #Mkdir directory
         sftp.mkdir(tmp_path)
-    
+    """
     #check_tmp=Path(tmp_path)
     
     #if not check_tmp.exists():
@@ -163,7 +165,7 @@ def make_task(rsa, ssh, task_name, features):
     
     #Clean tmp dir first
     
-    
+    """"
     try:
         
         stdin, stdout, stderr = ssh.exec_command('rm -f -r '+tmp_path+'/*')
@@ -175,6 +177,8 @@ def make_task(rsa, ssh, task_name, features):
     except:
         logging.warning("Error deleting tmp:"+ str(sys.exc_info()[1]))
         exit(1)
+    
+    """
     
     #logging.info("Running actions..., you can see the progress in this log: "+path_log)
     
@@ -211,17 +215,19 @@ def make_task(rsa, ssh, task_name, features):
         
         #Destiny path in remote server
         
-        dest_file=ConfigClass.tmp_sftp_path+'/'+script_file
+        dest_file=source_file
         
         #Upload script file to execute
         
         try:
-        
+            
+            stdin, stdout, stderr = ssh.exec_command('mkdir -p '+os.path.dirname(dest_file))
+            
             sftp.put(source_file, dest_file, callback=None, confirm=True)
             
         except:
-
-            logging.warning("Error uploading files:"+ str(sys.exc_info()[1]))
+            
+            logging.warning("Error uploading files:"+ traceback.format_exc())
             exit(1)
         
         logging.info("Uploaded file:"+source_file)
@@ -232,9 +238,12 @@ def make_task(rsa, ssh, task_name, features):
             
             extra_source_file=p+'/'+features['os_codename']+'/'+extra_file
             
-            extra_dest_file=ConfigClass.tmp_sftp_path+'/'+os.path.basename(extra_file)
+            extra_dest_file=extra_source_file
+            #ConfigClass.tmp_sftp_path+'/'+os.path.basename(extra_file)
             
             try:
+                
+                stdin, stdout, stderr = ssh.exec_command('mkdir -p '+os.path.dirname(extra_dest_file))
         
                 sftp.put(extra_source_file, extra_dest_file, callback=None, confirm=True)
             

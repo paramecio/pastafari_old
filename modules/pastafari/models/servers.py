@@ -79,7 +79,14 @@ class ServerTask(WebModel):
         
         self.register(corefields.IntegerField('pid'))
         
+
+class ServerMonit(WebModel):
+    
+    def create_fields(self):
         
+        self.register(corefields.CharField('check_task'), True)
+        
+        self.register(corefields.CharField('profile'))
         
         
     
