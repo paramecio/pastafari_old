@@ -57,11 +57,15 @@ class LastUpdatedField(datefield.DateField):
     
     def show_formatted(self, value):
         
-        now=datetime.now()
-
-        five_minutes=int(now)-500
+        now=datetime.now(gmt=True)
         
-        if int(value)>five_minutes:
+        timestamp_now=datetime.obtain_timestamp(now)
+        
+        timestamp_value=datetime.obtain_timestamp(value)
+
+        five_minutes=int(timestamp_now)-300
+        
+        if timestamp_value<five_minutes:
             
             return '<img src="'+make_media_url_module('images/status_red.png', 'pastafari')+'" />'
         else:
