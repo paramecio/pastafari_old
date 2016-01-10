@@ -3,6 +3,7 @@
 from paramecio.cromosoma.webmodel import WebModel
 from paramecio.cromosoma import corefields
 from paramecio.cromosoma.extrafields import ipfield, datefield
+from paramecio.citoplasma import datetime
 from paramecio.citoplasma.urls import make_media_url_module
 """
 class ServerType(WebModel):
@@ -45,7 +46,27 @@ class StatusField(corefields.BooleanField):
         else:
             return '<img src="'+make_media_url_module('images/status_green.png', 'pastafari')+'" />'
             
+
+class LastUpdatedField(datefield.DateField):        
+    
+    def __init__(self, name, size=1):
         
+        super().__init__(name, size)
+        
+        self.escape=False
+    
+    def show_formatted(self, value):
+        
+        now=datetime.now()
+
+        five_minutes=int(now)-500
+        
+        if int(value)>five_minutes:
+            
+            return '<img src="'+make_media_url_module('images/status_red.png', 'pastafari')+'" />'
+        else:
+            return '<img src="'+make_media_url_module('images/status_green.png', 'pastafari')+'" />'
+    
 
 class Server(WebModel):
 
@@ -63,7 +84,7 @@ class Server(WebModel):
 
         self.register(corefields.CharField('profile'), True)
         
-        self.register(datefield.DateField('last_updated'))
+        self.register(LastUpdatedField('last_updated'))
 
         self.register(StatusField('status'))
         
