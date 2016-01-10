@@ -2,7 +2,7 @@
 
 from paramecio.cromosoma.webmodel import WebModel
 from paramecio.cromosoma import corefields
-from paramecio.cromosoma.extrafields import ipfield
+from paramecio.cromosoma.extrafields import ipfield, datefield
 from paramecio.citoplasma.urls import make_media_url_module
 """
 class ServerType(WebModel):
@@ -62,6 +62,8 @@ class Server(WebModel):
         self.register(corefields.CharField('type'), True)
 
         self.register(corefields.CharField('profile'), True)
+        
+        self.register(datefield.DateField('last_updated'))
 
         self.register(StatusField('status'))
         
