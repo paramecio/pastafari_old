@@ -49,9 +49,9 @@ class StatusField(corefields.BooleanField):
 
 class LastUpdatedField(datefield.DateField):        
     
-    def __init__(self, name, size=1):
+    def __init__(self, name):
         
-        super().__init__(name, size)
+        super().__init__(name)
         
         self.escape=False
     
@@ -92,6 +92,18 @@ class Server(WebModel):
 
         self.register(StatusField('status'))
         
+class ServerInfo(WebModel):
+    
+    def create_fields(self):
+
+        self.register(corefields.ForeignKeyField('server', Server()), True)
+
+        self.register(corefields.IntegerField('network_up'), True)
+        
+        self.register(corefields.IntegerField('network_down'), True)
+        
+        self.register(corefields.FloatField('cpu_use'), True)
+        
 class ServerTask(WebModel):
     
     def create_fields(self):
@@ -105,7 +117,7 @@ class ServerTask(WebModel):
         self.register(corefields.TextField('info'))
         
         self.register(corefields.IntegerField('pid'))
-        
+
 
 class ServerMonit(WebModel):
     
@@ -116,4 +128,4 @@ class ServerMonit(WebModel):
         self.register(corefields.CharField('profile'))
         
         
-    
+
