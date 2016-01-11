@@ -4,7 +4,6 @@
 
 import argparse
 import re
-import socket
 from subprocess import call
 
 parser = argparse.ArgumentParser(description='A script for install alive script and cron')
@@ -26,13 +25,6 @@ check_url = re.compile(
 
 if check_url.match(args.url):
     
-    # Need obtain ip of this shit
-    
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("gmail.com",80))
-    ip=s.getsockname()[0]
-    s.close()
-    
     # Edit alive cron 
     
     f=open('protozoo/scripts/debian_jessie/monit/files/crontab/alive')
@@ -41,7 +33,7 @@ if check_url.match(args.url):
     
     f.close()
     
-    alive_cron=alive_cron.replace('/home/spanel/protozoo/scripts/debian_jessie/monit/files/alive.py', '/home/'+args.user+'/protozoo/scripts/debian_jessie/monit/files/alive.py')
+    alive_cron=alive_cron.replace('/home/spanel/protozoo/scripts/debian_jessie/monit/files/alive.sh', '/home/'+args.user+'/protozoo/scripts/debian_jessie/monit/files/alive.sh')
     
     f=open('protozoo/scripts/debian_jessie/monit/files/crontab/alive', 'w')
     
@@ -51,15 +43,15 @@ if check_url.match(args.url):
     
     # Edit alive script
     
-    f=open('protozoo/scripts/debian_jessie/monit/files/alive.py')
+    f=open('protozoo/scripts/debian_jessie/monit/files/alive.sh')
     
     alive_script=f.read()
     
     f.close()
     
-    alive_script=alive_script.replace("url='http://url/to/server'", "url='"+args.url+"'")
+    alive_script=alive_script.replace("URL=\"http://url/to/server\"", "URL=\""+args.url+"\"")
     
-    f=open('protozoo/scripts/debian_jessie/monit/files/alive.py', 'w')
+    f=open('protozoo/scripts/debian_jessie/monit/files/alive.sh', 'w')
     
     f.write(alive_script)
     
@@ -68,10 +60,10 @@ if check_url.match(args.url):
     # Copy cron alive to /etc/cron.d/
     
     if call("sudo cp protozoo/scripts/debian_jessie/monit/files/crontab/alive /etc/cron.d/alive", shell=True) > 0:
-        print('Error, cannot install config.py file')
+        print('Error, cannot install crontab alive file in cron.d')
         exit(1)
     else:
-        print('Added config.py for config paramecio')
+        print('Added contrab alive file in cron.d')
     
     print('Script installed successfully')
     
