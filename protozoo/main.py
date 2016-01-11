@@ -35,9 +35,11 @@ show_progress=show_progress_percent
 
 config_task_reload=None
 
-def make_task(rsa, ssh, task_name, features):
+def make_task(rsa, ssh, task_name, features, dir_config_task):
     
     global config_task_reload
+    
+    dir_config_task=dir_config_task.replace('/', '.')
     
     server=features['hostname']
     server_ip=features['ip']
@@ -61,8 +63,8 @@ def make_task(rsa, ssh, task_name, features):
     if config_task_reload==None:
         
         try:
-    
-            config_task_reload=import_module('settings.config_'+task_name)
+            
+            config_task_reload=import_module('settings.protozoo.'+dir_config_task+'.config')
             
         except:
             
@@ -77,7 +79,13 @@ def make_task(rsa, ssh, task_name, features):
             
         except:
             pass
-            
+
+    
+    if config_task_reload!=None:
+        
+        if hasattr(config_task_reload, 'add_data'):
+            config_task_reload.add_data(features)
+
     #       print("Task need a settings.py in "+task_path)
     #       exit(1)
     
@@ -87,7 +95,7 @@ def make_task(rsa, ssh, task_name, features):
         
         try:
     
-            config_task_server=import_module('settings.config_'+task_name+'_'+features['name'])
+            config_task_server=import_module('settings.protozoo.'+dir_config_task+'.config_'+features['name'])
             
         except ImportError as e:
             
@@ -98,7 +106,7 @@ def make_task(rsa, ssh, task_name, features):
     else:
         try:
             
-            config_task_server=import_module('settings.config_'+task_name+'_'+features['name'])
+            config_task_server=import_module('settings.protozoo.'+dir_config_task+'.config_'+features['name'])
             
         except:
             pass
@@ -554,7 +562,7 @@ def start():
     
         for features in profile.servers:
             
-            p_server[features['hostname']] = Process(target=make_task, args=(rsa, client, task_name, features))
+            p_server[features['hostname']] = Process(target=make_task, args=(rsa, client, task_name, features, args.task))
             p_server[features['hostname']].start()
             #p_server[features['hostname']].join()
             num_forks+=1

@@ -6,8 +6,8 @@ from settings import config
 from bottle import get
 import json
 
-@get('/pastafari/monit/up/<ip>/<token>')
-def index(ip, token):
+@get('/pastafari/monit/up/<token>/<ip>')
+def index(token, ip):
     
     if config.api_key==token and config.api_key!='':
     

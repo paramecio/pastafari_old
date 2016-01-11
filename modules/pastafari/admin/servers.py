@@ -74,7 +74,7 @@ def admin(t):
         
         #server_list.fields=['id', 'type']
         
-        server_list.fields_showed=['name', 'ip', 'profile', 'type', 'last_updated']
+        server_list.fields_showed=['hostname', 'ip', 'profile', 'type', 'last_updated']
         
         server_list.yes_search=False
         
