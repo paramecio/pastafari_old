@@ -96,7 +96,7 @@ class ServerInfo(WebModel):
     
     def create_fields(self):
 
-        self.register(corefields.ForeignKeyField('server', Server()), True)
+        self.register(ipfield.IpField('server'), True)
 
         self.register(corefields.IntegerField('network_up'), True)
         

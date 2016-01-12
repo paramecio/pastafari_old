@@ -2,6 +2,10 @@
 
 import psutil
 import json
+import urllib.request
+import urllib.parse
+
+url="http://url/to/info"
 
 network_info=psutil.net_io_counters(pernic=True)
 
@@ -21,6 +25,11 @@ for device, info in network_info.items():
 #for device, info in network_devices.items():
     
     #print(info)
+json_info=json.dumps({'device_info': dev_info, 'cpu_info': cpu_idle})
 
-print(json.dumps({'device_info': dev_info, 'cpu_info': cpu_idle}))
+data = urllib.parse.urlencode({'data_json': json_info})
+
+data = data.encode('ascii')
+urllib.request.urlopen(url, data)
+
 

@@ -28,3 +28,7 @@ def index(token, ip):
     return "Nothing to see here"
 
 
+@post('/pastafari/monit/info/<token>/<ip>')
+def info(token, ip):
+    
+    pass

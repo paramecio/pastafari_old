@@ -12,4 +12,5 @@ tests/
 backups/
 sessions/
 settings/config.py
+logs/
 
