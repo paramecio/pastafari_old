@@ -30,6 +30,23 @@ def admin(t):
     
         return ""
         pass
+    elif GetPostFiles.get['op']=='view_status':
+        
+        GetPostFiles.get['id']=GetPostFiles.get.get('id', '0')
+    
+        server_id=int(GetPostFiles.get['id'])
+    
+        server_view=server.select_a_row(server_id)
+        
+        network_status=servers.ServerInfoNet()
+        
+        network_status.conditions=['where server=%s', [server_view['ip']]]
+        
+        network_cur=network_status.select()
+        
+        if server_view!=False:
+    
+            return ts.load_template('server_status.phtml', server_view=server_view)
     
     else:
     
@@ -86,7 +103,7 @@ def admin(t):
     
 def server_options(url, id, arr_row):
         options=[]
-        options.append('<a href="'+add_get_parameters(url, op_admin='see_status', id=id)+'">'+I18n.lang('pastafari', 'see_status', 'See status')+'</a>')
+        options.append('<a href="'+add_get_parameters(url, op='view_status', id=id)+'">'+I18n.lang('pastafari', 'view_status', 'View status')+'</a>')
         return options
     
     
