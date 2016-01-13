@@ -91,7 +91,9 @@ class Server(WebModel):
         self.register(LastUpdatedField('last_updated'))
 
         self.register(StatusField('status'))
-        
+
+# {"device_info": {"vboxnet0": [10583, 0], "wlan0": [8116702, 159213180], "eth0": [0, 0], "lo": [495999, 495999]}, "cpu_info": [7.1, 6.0, 5.0, 6.0]}
+""""        
 class ServerInfo(WebModel):
     
     def create_fields(self):
@@ -103,7 +105,38 @@ class ServerInfo(WebModel):
         self.register(corefields.IntegerField('network_down'), True)
         
         self.register(corefields.FloatField('cpu_use'), True)
+"""
+
+class ServerInfoNet(WebModel):
+    
+    def create_fields(self):
         
+        self.register(ipfield.IpField('server'), True)
+        
+        self.fields['server'].indexed=True
+        
+        self.register(corefields.CharField('device', 25), True)
+        
+        self.register(corefields.IntegerField('network_up'), True)
+        
+        self.register(corefields.IntegerField('network_down'), True)
+        
+        self.register(datefield.DateField('date'))
+        
+        
+class ServerInfoCPU(WebModel):
+    
+    def create_fields(self):
+        
+        self.register(ipfield.IpField('server'), True)
+        
+        self.fields['server'].indexed=True
+
+        self.register(corefields.FloatField('cpu_use'))
+        
+        self.register(datefield.DateField('date'), True)
+
+    
 class ServerTask(WebModel):
     
     def create_fields(self):
