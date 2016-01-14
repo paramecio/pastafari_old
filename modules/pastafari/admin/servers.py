@@ -3,12 +3,14 @@
 from settings import config
 from paramecio.citoplasma.mtemplates import ptemplate
 from paramecio.citoplasma.lists import SimpleList
+from paramecio.citoplasma import datetime
 from modules.pastafari.models import servers
 from paramecio.citoplasma.urls import make_url
 from paramecio.citoplasma.httputils import GetPostFiles
 from paramecio.citoplasma.i18n import I18n
 from paramecio.citoplasma.urls import add_get_parameters
 from paramecio.cromosoma.coreforms import SelectForm
+import json
 
 ts=ptemplate(__file__)
 
@@ -38,15 +40,78 @@ def admin(t):
     
         server_view=server.select_a_row(server_id)
         
-        network_status=servers.ServerInfoNet()
-        
-        network_status.conditions=['where server=%s', [server_view['ip']]]
-        
-        network_cur=network_status.select()
+        GetPostFiles.get['show_data']=GetPostFiles.get.get('show_data', '0')
         
         if server_view!=False:
+        
+            if GetPostFiles.get['show_data']=='0':
     
-            return ts.load_template('server_status.phtml', server_view=server_view)
+                return ts.load_template('server_status.phtml', server_view=server_view)
+    
+            elif GetPostFiles.get['show_data']=='1':
+                
+                get_c=60
+            
+                ptemplate.show_basic_template=False
+            
+                network_status=servers.ServerInfoNet()
+                
+                c=network_status.select_count()
+                
+                begin_c=c-get_c
+                
+                if begin_c<0:
+                    
+                    begin_c=0
+                
+                network_status.set_conditions('where server=%s', [server_view['ip']])
+                
+                network_status.set_order(['date'], ['ASC'])
+                
+                network_status.set_limit([begin_c, get_c])
+                
+                network_cur=network_status.select()
+                
+                #arr_dates=[]
+                
+                arr_dates={}
+                
+                for net_info in network_cur:
+            
+                    arr_dates[net_info['device']]=arr_dates.get(net_info['device'], [])
+            
+                    net_info['date']=datetime.format_fulldate(net_info['date'])
+            
+                    arr_dates[net_info['device']].append(net_info)
+            
+                    #arr_dates.append(arr_date)
+            
+                arr_final_dates={}
+            
+                for dev in arr_dates:
+                    
+                    substract_up=arr_dates[dev][0]['network_up']
+                    
+                    substract_down=arr_dates[dev][0]['network_down']
+                    
+                    arr_final_dates[dev]=[]
+                    
+                    for x in range(1, len(arr_dates[dev])):
+                        
+                        up=arr_dates[dev][x]['network_up']-substract_up
+                        
+                        down=arr_dates[dev][x]['network_down']-substract_down
+                        
+                        arr_final_dates[dev].append({'date': arr_dates[dev][x]['date'], 'network_up': up, 'network_down': down})
+                        
+                        substract_up=arr_dates[dev][x]['network_up']
+                    
+                        substract_down=arr_dates[dev][x]['network_down']
+                        
+                        pass
+                    
+            
+                return json.dumps(arr_final_dates)
     
     else:
     

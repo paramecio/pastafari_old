@@ -9,21 +9,23 @@
 <script language="javascript" src="${make_media_url_module('js/chart.min.js', 'pastafari')}"></script>
 <script language="javascript">
 
-var data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+var data = {}
+
+/*var data = {
+    labels: ["17:20", "17:21", "17:22", "17:23", "17:24", "17:25", "17:26"],
     datasets: [
         {
-            label: "My First dataset",
+            label: "lo",
             fillColor: "rgba(220,220,220,0.2)",
             strokeColor: "rgba(220,220,220,1)",
             pointColor: "rgba(220,220,220,1)",
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [65, 59, 80, 81, 56, 55, 40]
+            data: [0, 0, 0, 0, 0, 0, 0]
         },
         {
-            label: "My Second dataset",
+            label: "eth0",
             fillColor: "rgba(151,187,205,0.2)",
             strokeColor: "rgba(151,187,205,1)",
             pointColor: "rgba(151,187,205,1)",
@@ -33,13 +35,87 @@ var data = {
             data: [28, 48, 40, 19, 86, 27, 90]
         }
     ]
-};
+};*/
 
 var options={}
 
 var ctx=document.getElementById("network_status").getContext("2d");
-var network_status=new Chart(ctx).Line(data, options);
 
+load_netgraph();
 
+function load_netgraph()
+{
 
+    $.ajax({
+
+        url: "${make_url('admin/pastafari/servers?op=view_status&id='+str(server_view['id'])+'&show_data=1')}",
+        method: "POST",
+        dataType: "json",
+        data: {}
+        }).done(function(data) {
+
+            if(data.error==0)
+            {
+                
+                //window.location.href="${make_url('admin')}";
+                
+                alert('Error: cannot load the data');
+            
+            }
+            else
+            {
+            
+                var data_graph = {labels:[], datasets: []};
+                
+                var dev = [];
+                
+                for(k in data) 
+                {
+                    dev.push(k);
+                }
+                
+                x=0;
+                
+                z=data[dev[0]].length;
+                
+                set={
+                
+                        label: dev[0],
+                        fillColor: "rgba(20,20,220,0.2)",
+                        strokeColor: "rgba(220,220,220,1)",
+                        pointColor: "rgba(220,220,220,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(220,220,220,1)",
+                        data: []
+                        
+                }
+                
+                data_graph.datasets.push(set)
+            
+                for(x=0;x<z;x++)
+                {
+                    
+                    data_graph.labels.push(data[dev[0]][x]['date']);
+                    
+                    kb=data[dev[0]][x]['network_up']/1024;
+                    
+                    kb=kb.toFixed(2);
+                    
+                    data_graph.datasets[0].data.push(kb);
+                }
+                
+                
+                //Next things
+                
+                //Show data
+                
+                var network_status=new Chart(ctx).Line(data_graph, options);
+                
+            }
+
+    });
+
+}
+    
 </script>
